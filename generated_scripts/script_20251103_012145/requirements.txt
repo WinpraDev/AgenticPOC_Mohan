@@ -1,0 +1,4 @@
+loguru
+psycopg2-binary
+pydantic
+python-dotenv

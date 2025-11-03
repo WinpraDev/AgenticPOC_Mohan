@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  script_20251103_071518:
+    build: .
+    container_name: script_20251103_071518
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - OUTPUT_DIR=/app/results
+      - LOG_DIR=/app/logs
+    volumes:
+      - ./results:/app/results:rw
+      - ./logs:/app/logs:rw
+      - ./exports/reports:/app/exports/reports:rw
+      - ./exports/data:/app/exports/data:rw
+      - ./data:/app/data:rw
+    mem_limit: 128m
+    cpus: 0.5
+    restart: no
+    networks:
+      - script-network
+
+networks:
+  script-network:
+    driver: bridge

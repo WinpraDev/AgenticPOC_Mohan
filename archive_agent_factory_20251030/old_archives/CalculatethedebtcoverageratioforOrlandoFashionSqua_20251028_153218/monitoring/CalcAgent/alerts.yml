@@ -1,0 +1,33 @@
+# Alert configuration for CalcAgent
+
+alerts:
+  - name: high_failure_rate
+    condition: failure_rate > 10
+    severity: warning
+    message: "{{ agent_name }} failure rate above 10%"
+    
+  - name: slow_execution
+    condition: avg_execution_time > 60
+    severity: warning
+    message: "{{ agent_name }} execution time above 60 seconds"
+    
+  - name: agent_down
+    condition: health_check_failed
+    severity: critical
+    message: "{{ agent_name }} health check failing"
+    
+  - name: database_connection_failed
+    condition: db_connection_error
+    severity: critical
+    message: "{{ agent_name }} cannot connect to database"
+
+notification:
+  channels:
+    - type: log
+      enabled: true
+    - type: email
+      enabled: false
+      recipients: []
+    - type: slack
+      enabled: false
+      webhook_url: ""

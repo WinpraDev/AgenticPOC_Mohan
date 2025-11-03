@@ -1,0 +1,91 @@
+agent_name: CalcAgent
+agent_type: calculation
+version: 1.0.0
+description: |
+  CalcAgent is a primary agent designed to calculate the debt coverage ratio for properties and check if rental income covers debt payments.
+role: primary_agent
+
+capabilities:
+  - name: calculate_debt_coverage_ratio
+    description: Calculates the debt coverage ratio for a given property.
+    inputs:
+      - name: property_data
+        type: dict
+        required: true
+        validation: must contain 'rental_income' and 'debt_payments'
+    outputs:
+      - name: debt_coverage_ratio
+        type: float
+        schema: {type: number, minimum: 0}
+    error_handling:
+      - error: MissingDataError
+        action: log_error
+        message: "Property data is missing required fields."
+      - error: InvalidDataError
+        action: log_error
+        message: "Invalid data provided for calculation."
+
+  - name: check_rental_coverage
+    description: Checks if rental income covers debt payments.
+    inputs:
+      - name: property_data
+        type: dict
+        required: true
+        validation: must contain 'rental_income' and 'debt_payments'
+    outputs:
+      - name: is_covered
+        type: bool
+        schema: {type: boolean}
+    error_handling:
+      - error: MissingDataError
+        action: log_error
+        message: "Property data is missing required fields."
+      - error: InvalidDataError
+        action: log_error
+        message: "Invalid data provided for calculation."
+
+data_sources:
+  - type: file
+    connection: path/to/orlando_fashion_square_data.json
+    tables: [property_data]
+
+workflow:
+  steps:
+    calculate_ratio:
+      description: Calculates the debt coverage ratio.
+      logic: |
+        debt_coverage_ratio = property_data['rental_income'] / property_data['debt_payments']
+      branches: {}
+    check_coverage:
+      description: Checks if rental income covers debt payments.
+      logic: |
+        is_covered = property_data['rental_income'] >= property_data['debt_payments']
+      branches: {}
+
+tools:
+  - name: None
+    purpose: No external tools are used.
+    calls: []
+
+dependencies:
+  python_packages:
+    - numpy==1.21.2
+  internal_agents: []
+  external_services: []
+
+performance:
+  timeout_seconds: 10
+  cache_enabled: true
+
+logging:
+  level: INFO
+  log_queries: false
+
+testing:
+  test_scenarios:
+    - name: calculate_ratio_test
+      input: {"property_data": {"rental_income": 5000, "debt_payments": 2000}}
+      expected: 2.5
+    - name: check_coverage_test
+      input: {"property_data": {"rental_income": 5000, "debt_payments": 2000}}
+      expected: true

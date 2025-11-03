@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  calculate-the-debt-coverage-ra-system:
+    build: .
+    container_name: calculate-the-debt-coverage-ra-system
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SIMULATION_MODE=${SIMULATION_MODE:-false}
+    volumes:
+      # Agent code (for development hot-reload)
+      - ./agents:/app/agents
+      
+      # Real-time file access (Host ↔ Container)
+      - ./logs:/app/logs              # System logs
+      - ./results:/app/results        # Analysis results (JSON)
+      - ./exports:/app/exports        # User-requested files (PDF, Excel, etc.)
+      - ./data:/app/data             # Input data files
+    networks:
+      - agent-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  agent-network:
+    driver: bridge

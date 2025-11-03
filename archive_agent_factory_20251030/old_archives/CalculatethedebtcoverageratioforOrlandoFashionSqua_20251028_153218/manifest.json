@@ -1,0 +1,13 @@
+{
+  "project_name": "Calculate the debt coverage ratio for Orlando Fashion Square",
+  "archive_name": "CalculatethedebtcoverageratioforOrlandoFashionSqua_20251028_153218",
+  "timestamp": "20251028_153218",
+  "archived_files": [
+    "specifications/calcagent.yaml",
+    "agent_code/calcagent.py",
+    "deployment/calculate-the-debt-coverage-ra-system/",
+    "monitoring/CalcAgent/"
+  ],
+  "file_count": 4,
+  "created_at": "2025-10-28T15:32:18.814189"
+}
