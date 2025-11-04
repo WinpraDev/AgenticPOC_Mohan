@@ -48,8 +48,7 @@ SANDBOX_CPU_LIMIT=1.0
 SANDBOX_IMAGE=python:3.11-slim
 
 # Output Configuration
-OUTPUT_DIR=./generated_agents
-SPEC_DIR=./agent_specs
+# Note: Agent Factory legacy fields removed - Meta-Agent uses generated_scripts/ instead
 LOG_DIR=./logs
 EOF
 

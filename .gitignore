@@ -17,9 +17,8 @@ ENV/
 logs/
 *.log
 
-# Generated agents and specs
-generated_agents/
-agent_specs/
+# Generated scripts (Meta-Agent output)
+generated_scripts/
 
 # IDE
 .vscode/

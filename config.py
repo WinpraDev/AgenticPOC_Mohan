@@ -44,8 +44,7 @@ class Settings(BaseSettings):
     sandbox_image: str = Field(default="python:3.11-slim", description="Docker image for sandbox")
     
     # ==================== Output Configuration ====================
-    output_dir: Path = Field(default=Path("./generated_agents"), description="Output directory for generated agents")
-    spec_dir: Path = Field(default=Path("./agent_specs"), description="Directory for agent specifications")
+    # Note: Agent Factory legacy fields removed - Meta-Agent uses generated_scripts/ instead
     log_dir: Path = Field(default=Path("./logs"), description="Log directory")
     
     @validator('llm_base_url')
@@ -82,14 +81,13 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         
         # Create output directories if they don't exist
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.spec_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir.mkdir(parents=True, exist_ok=True)
     
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra fields from .env (legacy Agent Factory fields)
 
 
 # Global settings instance
