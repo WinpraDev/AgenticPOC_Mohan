@@ -17,8 +17,11 @@ ENV/
 logs/
 *.log
 
-# Generated scripts (Meta-Agent output)
-generated_scripts/
+# Legacy folders (not used by Meta-Agent)
+results/
+generated_agents/
+agent_specs/
+
 
 # IDE
 .vscode/
