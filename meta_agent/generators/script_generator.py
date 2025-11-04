@@ -92,7 +92,7 @@ def generate_script(
             requirements = _generate_requirements(execution_plan, task_analysis.requires_web_interface, script_code)
             
             # Generate .env.example
-            env_example = _generate_env_example(task_analysis, execution_plan)
+            env_example = _generate_env_example(task_analysis, execution_plan, script_code)
             
             # Metadata
             metadata = {
@@ -676,16 +676,45 @@ def _generate_requirements(execution_plan: ExecutionPlan, has_web_interface: boo
     return "\n".join(req_list)
 
 
-def _generate_env_example(task_analysis: TaskAnalysis, execution_plan: ExecutionPlan) -> str:
+def _generate_env_example(task_analysis: TaskAnalysis, execution_plan: ExecutionPlan, script_code: str = "") -> str:
     """Generate .env.example content"""
     
     env_vars = []
     
-    # Database if needed
-    if "postgresql" in task_analysis.data_sources:
-        # Try to use actual DATABASE_URL from environment if available
-        # Otherwise use placeholder
-        db_url = os.getenv('DATABASE_URL', 'postgresql://user:password@host:port/dbname')
+    # Database if needed - check both data_sources and if psycopg2 is imported
+    needs_database = (
+        "postgresql" in task_analysis.data_sources or
+        "import psycopg2" in script_code or
+        "from psycopg2" in script_code
+    )
+    
+    if needs_database:
+        # Try to use actual DATABASE_URL from environment or config file
+        db_url = os.getenv('DATABASE_URL')
+        
+        # If not in environment, try reading from project .env file
+        if not db_url:
+            try:
+                from pathlib import Path
+                env_file = Path(__file__).parent.parent.parent / '.env'
+                if env_file.exists():
+                    with open(env_file, 'r') as f:
+                        for line in f:
+                            if line.startswith('DATABASE_URL='):
+                                db_url = line.split('=', 1)[1].strip()
+                                break
+            except Exception:
+                pass
+        
+        # Default to known working DATABASE_URL if still not found
+        if not db_url:
+            # Use the DSCR POC database from setup_env.sh as default
+            db_url = 'postgresql://dscr_user:dscr_password_change_me@localhost:5433/dscr_poc_db'
+        
+        # For Docker containers, replace localhost with host.docker.internal
+        if '@localhost:' in db_url:
+            db_url = db_url.replace('@localhost:', '@host.docker.internal:')
+        
         env_vars.append(f"DATABASE_URL={db_url}")
     
     # Web server if needed

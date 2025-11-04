@@ -123,8 +123,8 @@ def main():
     
     # User request - TEST 5: Property Aggregation
     user_request = """
-What's the total square footage across all properties? 
-Group them by property type and show average GLA per type.
+Calculate the debt service coverage ratio (DSCR) for all properties in my portfolio.
+Show me the property name, NOI, annual debt service, and DSCR for each property.
 """
     
     logger.info("📝 Request:")

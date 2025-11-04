@@ -1,8 +1,8 @@
-# script_20251103_072458
+# script_20251103_093016
 
-**Generated:** 2025-11-03 07:24:58  
+**Generated:** 2025-11-03 09:30:16  
 **Script:** script.py  
-**Container:** script_20251103_072458
+**Container:** script_20251103_093016
 
 ---
 
@@ -28,18 +28,32 @@ bash deploy.sh
 
 ## 📊 Usage
 
-### Running the Script
+### Web Interface
 
-The script executes automatically when the container starts.
-
-View logs:
-```bash
-docker-compose logs -f
+Open your browser:
+```
+http://localhost:8080
 ```
 
-Check results:
+The web interface provides:
+- View current results
+- Run simulations with different parameters
+- Download reports
+- Real-time updates
+
+### API Endpoints
+
 ```bash
-ls -la results/
+# Health check
+curl http://localhost:8080/health
+
+# Get results
+curl http://localhost:8080/api/results
+
+# Run simulation
+curl -X POST http://localhost:8080/api/simulate \
+  -H "Content-Type: application/json" \
+  -d '{"scenario": "optimistic"}'
 ```
 
 ---
