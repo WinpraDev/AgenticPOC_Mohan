@@ -1,408 +1,379 @@
-# Meta-Agent Script Executor
+# 🤖 Meta-Agent Script Executor
 
-**Version:** 2.1.0  
-**Last Updated:** November 3, 2025 (Database Schema Discovery Integrated into Workflow)  
-**Type:** Task Execution System  
-**Approach:** Generate → Execute → Results
+> Transform natural language into production-ready Python scripts with automatic validation, Docker containerization, and database integration using local LLMs.
 
-Transform natural language requests into executable scripts with interactive web interfaces and simulations.
-
----
-
-## 🎯 What Is This?
-
-The **Meta-Agent Script Executor** generates and executes Python scripts directly from natural language, eliminating the need for persistent agents.
-
-```
-Your Request → Script Generation → Container Execution → Results (8 seconds!)
-```
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![Docker](https://img.shields.io/badge/Docker-Required-blue.svg)](https://www.docker.com/)
+[![LM Studio](https://img.shields.io/badge/LM%20Studio-Qwen2.5%20Coder-green.svg)](https://lmstudio.ai/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## ⚡ Quick Example
+## 📖 Table of Contents
 
-**Input:**
-> "Calculate DSCR for Orlando Fashion Square and create a website to show results with simulations"
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Quick Start](#-quick-start)
+- [Architecture](#%EF%B8%8F-architecture)
+- [Usage Examples](#-usage-examples)
+- [Technology Stack](#-technology-stack)
+- [Configuration](#%EF%B8%8F-configuration)
+- [Project Structure](#-project-structure)
+- [Performance](#-performance)
+- [Troubleshooting](#-troubleshooting)
+- [Documentation](#-documentation)
+- [Contributing](#-contributing)
 
-**Output (8 seconds later):**
-- ✓ Python script generated (200 lines)
-- ✓ Docker container ready
-- ✓ Web interface at http://localhost:8080
-- ✓ Interactive simulations built-in
-- ✓ Results updated in real-time
+---
+
+## 🎯 Overview
+
+**Meta-Agent Script Executor** is an AI-powered system that converts natural language requests into executable, production-ready Python scripts. It automatically handles task analysis, execution planning, code generation, validation, and containerized deployment—all in seconds.
+
+### **Why Meta-Agent?**
+
+Traditional approaches require manual scripting, testing, and deployment. Meta-Agent automates this entire workflow:
+
+```
+Natural Language Request → AI Analysis → Code Generation → Validation → Docker Deploy → Results
+```
+
+**Time Savings:** ~97% faster than manual development
+**Reliability:** Built-in validation, security checks, and error handling
+**Flexibility:** Supports database operations, web interfaces, calculations, and more
+
+---
+
+## ✨ Key Features
+
+### 🚀 **Automated End-to-End Workflow**
+- Natural language to executable Python in **8 seconds**
+- Automatic task analysis and execution planning
+- LLM-powered code generation (local Qwen2.5-Coder via LM Studio)
+- Multi-layer validation (syntax, security, best practices)
+
+### 🐳 **Containerized Execution**
+- Automatic Docker containerization
+- Isolated execution environments
+- Resource limits and security controls
+- One-command deployment
+
+### 🗄️ **Smart Database Integration**
+- Automatic schema discovery
+- Dynamic query generation
+- PostgreSQL support with RealDictCursor pattern
+- Connection pooling and error handling
+
+### 🌐 **Web Interface Generation**
+- Auto-generated Flask applications
+- Interactive dashboards
+- Real-time results display
+- Built-in simulation capabilities
+
+### 🔒 **Security First**
+- No hardcoded credentials (environment variables only)
+- Container isolation
+- Code validation and security scanning
+- Dangerous pattern detection
+
+### 📊 **Results Display**
+- Terminal output with formatted results
+- Web-based dashboards (when requested)
+- Exportable reports (PDF, Excel)
+- Real-time execution logs
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Python 3.9+**
+- **Docker** (with Docker Compose)
+- **LM Studio** with `qwen2.5-coder-7b-instruct-mlx` model loaded
+- **PostgreSQL** (optional, for database tasks)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/AgenticPOC_Meta.git
+cd AgenticPOC_Meta
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup environment
+bash setup_env.sh
+
+# Edit .env file with your configuration
+nano .env
+```
+
+### Configuration
+
+Create a `.env` file in the project root:
+
+```bash
+# LM Studio Configuration
+LLM_BASE_URL=http://localhost:1234/v1
+LLM_MODEL_NAME=qwen2.5-coder-7b-instruct-mlx
+LLM_API_KEY=lm-studio
+LLM_TEMPERATURE=0.1
+LLM_MAX_TOKENS=4096
+LLM_CONTEXT_LENGTH=8192
+
+# Database Configuration (optional)
+DATABASE_URL=postgresql://user:password@localhost:5432/your_db
+
+# Meta-Agent Configuration
+META_AGENT_STRICT_MODE=true
+```
+
+### Run Your First Script
+
+```bash
+# Make sure LM Studio is running with the model loaded
+# Start the Meta-Agent Script Executor
+python script_executor.py
+```
+
+**Example Request (edit in `script_executor.py`):**
+```python
+user_request = """
+Calculate the debt service coverage ratio (DSCR) for all properties in my portfolio.
+Show me the property name, NOI, annual debt service, and DSCR for each property.
+"""
+```
+
+**Output:**
+```
+📊 RESULTS
+============================================================
+   Orlando Fashion Square: NOI = 1681699.59, Annual Debt Service = 866855.46, DSCR = 1.94
+   1893 Rouse Lake Rd: NOI = 2024147.93, Annual Debt Service = 1219366.22, DSCR = 1.66
+   Orlando Vineland Premium Outlets: NOI = 813169.89, Annual Debt Service = 672041.23, DSCR = 1.21
+   ...
+============================================================
+✨  COMPLETED SUCCESSFULLY
+```
 
 ---
 
 ## 🏗️ Architecture
 
-### 7-Step Workflow
+### Workflow Overview
 
-```
-1. Task Analyzer      → Understand what needs to be done
-2. Execution Planner  → Design step-by-step process
-3. Script Generator   → Generate Python code (LLM-powered)
-4. Script Validator   → Syntax + security checks
-5. Containerization   → Package in Docker
-6. Execution          → Run in isolated environment
-7. Results            → Access via web/files
-```
-
-### 97% Faster Than Agent Factory
-
-| Metric | Agent Factory | Script Executor |
-|--------|--------------|-----------------|
-| Time | 13 minutes | 8 seconds |
-| Steps | 10 | 7 |
-| Output | Persistent agents | Task results |
-| Best For | Reusable services | One-time tasks |
-
----
-
-## 📚 Quick Start
-
-### 1. Prerequisites
-
-```bash
-# Python 3.9+
-python3 --version
-
-# Docker
-docker --version
-
-# LM Studio running on port 1234
-# Model: qwen2.5-coder-7b-instruct-mlx
+```mermaid
+graph LR
+    A[Natural Language Request] --> B[Task Analyzer]
+    B --> C[Execution Planner]
+    C --> D[Script Generator LLM]
+    D --> E[Script Validator]
+    E --> F[Container Executor]
+    F --> G[Results Display]
 ```
 
-### 2. Setup
+### 7-Step Process
 
-```bash
-cd /Users/mohan_cr/Desktop/WinPra/Codebase/AgenticPOC_Meta
+1. **🔍 Task Analysis** - Understand request intent, complexity, and requirements
+2. **📋 Execution Planning** - Design step-by-step execution plan with dependencies
+3. **🗄️ Schema Discovery** - Inspect database structure (if needed)
+4. **⚡ Script Generation** - LLM generates Python code with best practices
+5. **🔒 Validation** - Syntax, security, and best practice checks
+6. **📦 Containerization** - Package with Docker, dependencies, and environment
+7. **🚀 Execution & Results** - Run in isolated container, display results
 
-# Activate virtual environment
-source venv/bin/activate
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your DATABASE_URL and settings
-```
-
-### 3. Run
-
-```bash
-python script_executor.py
-```
-
-### 4. Deploy Generated Script
-
-```bash
-# Navigate to generated script directory
-cd generated_scripts/<timestamp>/
-
-# Configure
-cp .env.example .env
-# Edit .env
-
-# Deploy
-bash deploy.sh
-
-# Access web interface (if generated)
-open http://localhost:8080
-```
-
----
-
-## 🎯 Use Cases
-
-### 1. Financial Calculations with Web Dashboard
-
-**Request:**
-> "Calculate DSCR for properties and create a dashboard with simulation capabilities"
-
-**Generated:**
-- Python script with calculation logic
-- Flask web server
-- Interactive HTML dashboard
-- Simulation form for what-if scenarios
-- Real-time result updates
-
-**Access:**
-- http://localhost:8080 → View results
-- Enter scenarios → Run simulations
-- Download reports
-
----
-
-### 2. Data Processing Pipeline
-
-**Request:**
-> "Extract property data from database, calculate metrics, generate report"
-
-**Generated:**
-- Database connection script
-- Data processing logic
-- Report generation (PDF/Excel)
-- Automated execution
-
-**Results:**
-- `results/property_metrics.xlsx`
-- `results/summary_report.pdf`
-- `logs/execution.log`
-
----
-
-### 3. API Integration with Analysis
-
-**Request:**
-> "Fetch data from API, analyze trends, create visualization dashboard"
-
-**Generated:**
-- API client code
-- Data analysis logic
-- Visualization web interface
-- Interactive charts
-
----
-
-## 🛠️ Components
-
-### Core Modules
+### Key Components
 
 ```
 meta_agent/
-├── analyzers/
-│   └── task_analyzer.py          # Understand user requests
-├── planners/
-│   └── execution_planner.py      # Design execution steps
-├── generators/
-│   ├── script_generator.py       # Generate Python code
-│   └── dockerfile_generator.py   # Generate Docker files
-├── validators/
-│   └── script_validator.py       # Validate syntax & security
-├── executors/
-│   └── container_executor.py     # Execute in containers
-└── utils/
-    ├── llm_client.py             # LLM interface
-    └── archive_manager.py        # Archive results
+├── analyzers/          # Task understanding
+├── planners/           # Execution strategy
+├── generators/         # Code & Docker generation
+├── validators/         # Multi-layer validation
+├── executors/          # Container management
+└── utils/              # LLM client, DB inspector
 ```
 
 ---
 
-## 🌐 Web Interface Features
+## 💡 Usage Examples
 
-When you request a web interface, the generated script includes:
-
-### Automatic Features
-
-✅ **Dashboard Page**
-- Display current results
-- Show key metrics
-- Visual charts (if applicable)
-
-✅ **Simulation Form**
-- Input scenario parameters
-- Run what-if analysis
-- Compare results
-
-✅ **API Endpoints**
-```
-GET  /              → Dashboard
-GET  /health        → Health check
-GET  /api/results   → Current results
-POST /api/simulate  → Run simulation
-GET  /api/download  → Download report
-```
-
-✅ **Real-Time Updates**
-- Results update without page refresh
-- Live calculation status
-- Progress indicators
-
----
-
-## 🔄 Interactive Workflow
-
-### Initial Execution
-
-```
-User: "Calculate DSCR for Orlando Fashion Square"
-      ↓
-Meta-Agent generates script
-      ↓
-Container starts
-      ↓
-Calculations execute
-      ↓
-Web interface shows: DSCR = 1.35 ✓
-```
-
-### User Simulations
-
-```
-User sees results on webpage
-      ↓
-User enters scenarios in form:
-  - Base case
-  - +10% revenue
-  - -10% revenue
-      ↓
-Clicks "Run Simulation"
-      ↓
-Container re-executes with new parameters
-      ↓
-Results update on same page
-      ↓
-Comparison chart displayed
-```
-
----
-
-## 📊 Example Output
-
-### Generated Script Structure
+### Example 1: Financial Calculations (Console Output)
 
 ```python
-#!/usr/bin/env python3
-from flask import Flask, render_template, request, jsonify
-import os
-import psycopg2
-from loguru import logger
+user_request = """
+Calculate the debt service coverage ratio (DSCR) for all properties in my portfolio.
+"""
+```
 
-# Configuration from environment
-DB_URL = os.getenv('DATABASE_URL', '')
-PORT = int(os.getenv('PORT', '8080'))
+**Result:**
+- Generated Python script with database queries
+- Automatic calculation logic
+- Terminal output with formatted results
+- Execution time: ~5 seconds
 
-app = Flask(__name__)
+---
 
-class DSCRCalculator:
-    def calculate(self, property_id, scenario='base'):
-        # Fetch data from database
-        # Calculate DSCR
-        # Return results
-        pass
+### Example 2: Interactive Web Dashboard
 
-@app.route('/')
-def dashboard():
-    calc = DSCRCalculator()
-    result = calc.calculate('orlando-fashion-square')
-    return render_template('dashboard.html', result=result)
+```python
+user_request = """
+Calculate cap rates for all properties and create a website to display results 
+with simulation capabilities for different scenarios.
+"""
+```
 
-@app.route('/api/simulate', methods=['POST'])
-def simulate():
-    params = request.json
-    calc = DSCRCalculator()
-    results = []
-    for scenario in params['scenarios']:
-        result = calc.calculate(
-            'orlando-fashion-square',
-            scenario=scenario
-        )
-        results.append(result)
-    return jsonify(results)
+**Result:**
+- Generated Flask web application
+- Interactive dashboard at `http://localhost:8080`
+- Pre-calculated results displayed
+- Simulation form for what-if analysis
+- Execution time: ~8 seconds
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT)
+---
+
+### Example 3: Financial Analysis with Ranking
+
+```python
+user_request = """
+Rank all properties by their cap rate from highest to lowest. 
+Show me the top performers and identify any properties below 5% cap rate.
+"""
+```
+
+**Result:**
+- Database query with JOIN operations
+- Sorting and filtering logic
+- Formatted output with rankings
+- Highlighted underperformers
+
+---
+
+### Example 4: Complex Multi-Metric Analysis
+
+```python
+user_request = """
+Analyze property performance by calculating DSCR, Cap Rate, and Cash-on-Cash return. 
+Create a comprehensive dashboard showing all metrics with drill-down capabilities.
+"""
+```
+
+**Result:**
+- Multi-table database queries
+- Multiple calculation engines
+- Interactive web dashboard
+- Exportable reports
+
+---
+
+## 🛠️ Technology Stack
+
+### Core Technologies
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Language** | Python 3.9+ | Core scripting language |
+| **LLM** | Qwen2.5-Coder-7B (via LM Studio) | Code generation |
+| **Containerization** | Docker + Docker Compose | Isolated execution |
+| **Database** | PostgreSQL + psycopg2 | Data persistence |
+| **Web Framework** | Flask | Generated web interfaces |
+| **Validation** | Pydantic + AST | Data & code validation |
+| **Logging** | Loguru | Structured logging |
+
+### Python Libraries
+
+```
+pydantic>=2.0.0          # Data validation
+loguru>=0.7.0            # Logging
+psycopg2-binary>=2.9.0   # PostgreSQL
+langchain-openai         # LLM client adapter
+httpx                    # HTTP client
+flask>=3.0.0            # Web framework (generated)
 ```
 
 ---
 
-## 🔐 Security
-
-### Built-in Security
-
-✅ **No Hardcoded Credentials**
-- All configuration from environment variables
-- Validation enforces `os.getenv()` usage
-
-✅ **Container Isolation**
-- Each execution in separate container
-- Resource limits enforced
-- Network restrictions
-
-✅ **Code Validation**
-- Syntax checking
-- Security scanning
-- Dangerous pattern detection
-
----
-
-## 📁 File Structure
-
-### Generated Files Per Execution
-
-```
-generated_scripts/<timestamp>/
-├── script.py              # Main Python script
-├── requirements.txt       # Dependencies
-├── Dockerfile            # Container definition
-├── docker-compose.yml    # Orchestration
-├── deploy.sh             # Deployment script
-├── .env.example          # Environment template
-├── README.md             # Usage guide
-├── results/              # Execution results
-├── logs/                 # Application logs
-├── exports/
-│   ├── reports/          # Generated reports
-│   └── data/             # Exported data
-└── data/                 # Input data
-```
-
----
-
-## 🎓 Configuration
+## ⚙️ Configuration
 
 ### Environment Variables
 
+#### LM Studio Configuration
 ```bash
-# Database
-DATABASE_URL=postgresql://user:pass@host:port/db
+LLM_BASE_URL=http://localhost:1234/v1       # LM Studio API endpoint
+LLM_MODEL_NAME=qwen2.5-coder-7b-instruct-mlx  # Model identifier
+LLM_API_KEY=lm-studio                       # Placeholder key
+LLM_TEMPERATURE=0.1                         # Generation temperature (0.0-1.0)
+LLM_MAX_TOKENS=4096                         # Max tokens per response
+LLM_CONTEXT_LENGTH=8192                     # Context window size
+```
 
-# Web Server (if generated)
-PORT=8080
-HOST=0.0.0.0
+#### Database Configuration
+```bash
+DATABASE_URL=postgresql://user:password@host:port/database
+# Format: postgresql://[user]:[password]@[host]:[port]/[database]
+```
 
-# Output
-OUTPUT_DIR=./results
-LOG_DIR=./logs
-
-# Logging
-LOG_LEVEL=INFO
+#### Meta-Agent Settings
+```bash
+META_AGENT_STRICT_MODE=true                 # Enable strict validation
+DOCKER_TIMEOUT=30                           # Container timeout (seconds)
+SANDBOX_MEMORY_LIMIT=512m                   # Memory limit per container
+SANDBOX_CPU_LIMIT=1.0                       # CPU limit per container
 ```
 
 ---
 
-## 🚀 Advanced Usage
+## 📁 Project Structure
 
-### Custom Scenarios
-
-```python
-# In the web interface form
-Scenarios:
-  1. Base case (current data)
-  2. Revenue +10%, Expenses +0%
-  3. Revenue +10%, Expenses -5%
-  4. Revenue -10% (stress test)
-
-→ Run Simulation
-
-Results:
-  Base:    DSCR 1.35 ✓
-  +10/0:   DSCR 1.48 ✓
-  +10/-5:  DSCR 1.56 ✓
-  -10:     DSCR 1.22 ⚠️
 ```
-
-### API Integration
-
-```bash
-# Run simulation via API
-curl -X POST http://localhost:8080/api/simulate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "scenarios": [
-      {"name": "optimistic", "revenue_change": 0.10},
-      {"name": "pessimistic", "revenue_change": -0.10}
-    ]
-  }'
+AgenticPOC_Meta/
+├── script_executor.py              # Main entry point
+├── config.py                       # Configuration management
+├── setup_env.sh                    # Environment setup script
+├── requirements.txt                # Python dependencies
+│
+├── meta_agent/                     # Core Meta-Agent modules
+│   ├── analyzers/
+│   │   └── task_analyzer.py       # Task understanding & analysis
+│   ├── planners/
+│   │   └── execution_planner.py   # Execution strategy design
+│   ├── generators/
+│   │   ├── script_generator.py    # Python code generation
+│   │   └── dockerfile_generator.py # Docker file generation
+│   ├── validators/
+│   │   └── script_validator.py    # Multi-layer validation
+│   ├── executors/
+│   │   └── container_executor.py  # Docker container management
+│   └── utils/
+│       ├── llm_client.py          # LLM communication
+│       ├── database_inspector.py  # Schema discovery
+│       └── archive_manager.py     # Cleanup utilities
+│
+├── generated_scripts/              # Generated script outputs (gitignored)
+│   └── script_YYYYMMDD_HHMMSS/
+│       ├── script.py              # Generated Python script
+│       ├── requirements.txt       # Script dependencies
+│       ├── Dockerfile             # Container definition
+│       ├── docker-compose.yml     # Container orchestration
+│       ├── deploy.sh              # Deployment script
+│       ├── .env                   # Environment config
+│       ├── README.md              # Usage instructions
+│       ├── results/               # Execution outputs
+│       ├── logs/                  # Application logs
+│       └── exports/               # Reports & data
+│
+├── Docs/                          # Documentation
+│   ├── TECHNICAL_DOCUMENTATION.md
+│   ├── BACKEND_WORKFLOW_TECHNICAL.md
+│   └── COMPLETE_WORKFLOW_EXAMPLE.md
+│
+└── logs/                          # System logs (gitignored)
 ```
 
 ---
@@ -411,138 +382,233 @@ curl -X POST http://localhost:8080/api/simulate \
 
 ### Benchmarks
 
-- **Simple calculation:** 2-5 seconds
-- **Web interface generation:** 5-8 seconds
-- **With simulations:** 8-12 seconds
-- **Complex data processing:** 15-30 seconds
+| Task Type | Execution Time | Lines of Code | Memory Usage |
+|-----------|---------------|---------------|--------------|
+| Simple calculation | 2-5 sec | 50-100 | 128 MB |
+| Database query + calculation | 5-8 sec | 100-150 | 256 MB |
+| Web interface generation | 8-12 sec | 150-250 | 512 MB |
+| Complex multi-metric analysis | 15-30 sec | 250-400 | 512 MB |
 
-### Resource Usage
+### Comparison: Agent Factory vs. Script Executor
 
-- **Memory:** 128-512 MB per container
-- **CPU:** 0.5-1.0 cores per container
-- **Disk:** 50-200 MB per execution
+| Metric | Agent Factory | Script Executor | Improvement |
+|--------|--------------|-----------------|-------------|
+| **Time to Results** | 13 minutes | 8 seconds | **97% faster** |
+| **Steps** | 10 | 7 | 30% fewer |
+| **Output** | Persistent agents | Task results | Task-optimized |
+| **Web UI** | Manual setup | Auto-generated | Automated |
+| **Cleanup** | Manual | Automatic | Simplified |
 
 ---
 
-## 🔍 Troubleshooting
+## 🔧 Troubleshooting
 
-### Script Generation Issues
+### Common Issues
 
-**LLM not responding:**
-- Check LM Studio is running on port 1234
-- Verify model is loaded
-- Check `LLM_BASE_URL` in .env
+#### 1. LM Studio Connection Error
 
-**Syntax errors in generated code:**
-- Auto-retry mechanism will attempt fixes
-- Check logs for detailed error context
-- May need to adjust LLM temperature
-
-### Container Issues
-
-**Docker not available:**
-```bash
-docker info
-# If error, start Docker Desktop
+**Symptom:**
+```
+ConnectionError: Cannot connect to LM Studio at http://localhost:1234
 ```
 
-**Port already in use:**
-- Change `PORT` in .env
-- Update docker-compose.yml
+**Solution:**
+- Ensure LM Studio is running
+- Verify model `qwen2.5-coder-7b-instruct-mlx` is loaded
+- Check Local Server is started (port 1234)
+- Verify `LLM_BASE_URL` in `.env`
 
-**Container fails to start:**
+---
+
+#### 2. Database Connection Failed
+
+**Symptom:**
+```
+ERROR: connection to server at "localhost", port 5432 failed
+```
+
+**Solution:**
+- Check PostgreSQL is running: `pg_isready`
+- Verify `DATABASE_URL` in `.env`
+- For Docker containers, use `host.docker.internal` instead of `localhost`
+- Check database credentials and permissions
+
+---
+
+#### 3. Docker Container Failed
+
+**Symptom:**
+```
+Container deployment failed: Exited (1)
+```
+
+**Solution:**
 ```bash
-docker-compose logs
-# Check for missing environment variables
+# Check container logs
+docker logs <container_name>
+
+# Verify Docker is running
+docker info
+
+# Check port availability
+lsof -i :8080
+
+# Restart Docker daemon
+sudo systemctl restart docker  # Linux
+# Or restart Docker Desktop
+```
+
+---
+
+#### 4. Generated Script Syntax Error
+
+**Symptom:**
+```
+SyntaxError: invalid syntax in generated script
+```
+
+**Solution:**
+- Auto-retry mechanism will attempt to fix (up to 3 attempts)
+- Check LLM temperature (lower = more conservative)
+- Review `script.py` in generated directory
+- Increase `LLM_MAX_TOKENS` if code is truncated
+
+---
+
+#### 5. Empty Results Display
+
+**Symptom:**
+```
+📊 RESULTS
+============================================================
+============================================================
+```
+
+**Solution:**
+- Check container logs: `docker logs <container_name>`
+- Verify `DATABASE_URL` is correctly set in generated `.env`
+- Wait a few seconds for container to process
+- Check script execution succeeded: `docker ps -a`
+
+---
+
+### Debug Commands
+
+```bash
+# Check LM Studio connectivity
+curl http://localhost:1234/v1/models
+
+# View container logs
+docker logs <container_name>
+
+# Check container status
+docker ps -a --filter "name=script_"
+
+# Inspect generated script
+cat generated_scripts/script_<timestamp>/script.py
+
+# Test database connection
+psql $DATABASE_URL -c "SELECT 1;"
+
+# View execution results
+cat generated_scripts/script_<timestamp>/logs/app.log
 ```
 
 ---
 
 ## 📚 Documentation
 
-- **SCRIPT_EXECUTOR_PLAN.md** - Complete architecture
-- **ARCHITECTURE_COMPARISON.md** - vs Agent Factory
-- **archive_agent_factory_20251030/** - Old Agent Factory files
+### Comprehensive Guides
+
+- **[Technical Documentation](Docs/TECHNICAL_DOCUMENTATION.md)** - Architecture, components, and design decisions
+- **[Backend Workflow](Docs/BACKEND_WORKFLOW_TECHNICAL.md)** - Step-by-step backend process with examples
+- **[Complete Workflow Example](Docs/COMPLETE_WORKFLOW_EXAMPLE.md)** - Real-world example from start to finish
+
+### Quick References
+
+- **[Script Validation](meta_agent/validators/script_validator.py)** - How validation works
+- **[Database Inspector](meta_agent/utils/database_inspector.py)** - Schema discovery logic
+- **[LLM Client](meta_agent/utils/llm_client.py)** - LM Studio integration
 
 ---
 
-## 🎯 When to Use
+## 🤝 Contributing
 
-### ✅ Use Script Executor For:
+Contributions are welcome! Here's how you can help:
 
-- One-time calculations
-- Ad-hoc data analysis
-- Interactive dashboards
-- Simulation and comparison
-- Quick prototyping
-- Task-based workflows
+### Development Setup
 
-### ❌ Use Agent Factory For:
+```bash
+# Fork and clone the repository
+git clone https://github.com/your-username/AgenticPOC_Meta.git
+cd AgenticPOC_Meta
 
-- Persistent services
-- Reusable agents
-- Long-running operations
-- Production APIs
-- Complex multi-agent systems
+# Create feature branch
+git checkout -b feature/your-feature-name
 
----
+# Make changes and test
+python script_executor.py
 
-## 🛠️ Development
+# Commit and push
+git add .
+git commit -m "Add: your feature description"
+git push origin feature/your-feature-name
 
-### Adding New Features
-
-The system is modular and extensible:
-
-```python
-# Add new task type
-# In task_analyzer.py
-valid_types = ["calculation", "data_processing", 
-               "analysis", "report_generation", 
-               "web_app", "your_new_type"]
-
-# Add new action type
-# In execution_planner.py
-valid_actions = ["database_query", "calculation",
-                 "api_call", "your_new_action"]
+# Create Pull Request
 ```
 
----
+### Areas for Contribution
 
-## 📊 Comparison with Agent Factory
+- **🔌 New Integrations:** MySQL, MongoDB, Redis support
+- **📊 Visualization:** Chart generation, advanced dashboards
+- **🧪 Testing:** Unit tests, integration tests
+- **📝 Documentation:** Tutorials, examples, translations
+- **🐛 Bug Fixes:** Report and fix issues
+- **⚡ Performance:** Optimization and caching
 
-| Aspect | Script Executor | Agent Factory |
-|--------|----------------|---------------|
-| **Speed** | 8 seconds | 13 minutes |
-| **Output** | Task results | Persistent agents |
-| **Web UI** | Auto-generated | Manual setup |
-| **Simulations** | Built-in | Manual |
-| **Cleanup** | Automatic | Manual |
-| **Best For** | Tasks | Services |
+### Code Style
 
----
-
-## 🎉 Success Metrics
-
-✅ **Generation Success:** 95%+ valid scripts  
-✅ **Execution Time:** <10 seconds for simple tasks  
-✅ **Security:** Zero hardcoded credentials  
-✅ **Simulations:** Multi-scenario comparison built-in  
-✅ **Web Interface:** Interactive dashboard auto-generated  
+- Follow PEP 8 guidelines
+- Use type hints
+- Add docstrings to functions
+- Include comments for complex logic
+- Write descriptive commit messages
 
 ---
 
-## 📞 Support
+## 📄 License
 
-**Issues:**
-- Check logs: `docker-compose logs`
-- Review generated code: `cat script.py`
-- Validate environment: `.env` file complete?
-
-**Architecture:**
-- See SCRIPT_EXECUTOR_PLAN.md
-- See ARCHITECTURE_COMPARISON.md
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Transform requests into results in seconds!** 🚀
+## 🙏 Acknowledgments
 
+- **LM Studio** for local LLM infrastructure
+- **Qwen2.5-Coder** for code generation capabilities
+- **Docker** for containerization
+- **PostgreSQL** for reliable data storage
+
+---
+
+## 📞 Contact & Support
+
+- **Issues:** [GitHub Issues](https://github.com/your-username/AgenticPOC_Meta/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/your-username/AgenticPOC_Meta/discussions)
+- **Documentation:** [Docs](Docs/)
+
+---
+
+## 🌟 Star History
+
+If you find this project useful, please consider giving it a star! ⭐
+
+---
+
+<div align="center">
+
+**Transform natural language into executable scripts in seconds!** 🚀
+
+[Get Started](#-quick-start) · [View Documentation](Docs/) · [Report Bug](https://github.com/your-username/AgenticPOC_Meta/issues)
+
+</div>
