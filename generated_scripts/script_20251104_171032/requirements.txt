@@ -1,4 +1,5 @@
 loguru
+pandas
 psycopg2-binary
 pydantic
 python-dotenv

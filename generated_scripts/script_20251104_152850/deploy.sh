@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Deploying script_20251103_012528..."
+echo "🚀 Deploying script_20251104_152850..."
 
 # Create required directories
 mkdir -p logs results exports/reports exports/data data
@@ -36,10 +36,10 @@ echo "⏳ Waiting for container to be ready..."
 sleep 3
 
 # Check if container is running
-if docker ps | grep -q script_20251103_012528; then
+if docker ps | grep -q script_20251104_152850; then
     echo "✅ Container is running!"
     echo ""
-    echo "Container: script_20251103_012528"
+    echo "Container: script_20251104_152850"
     echo "View logs: docker-compose logs -f"
     echo "Check results: ls -la results/"
     echo "Stop: docker-compose down"

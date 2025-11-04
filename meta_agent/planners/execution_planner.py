@@ -132,6 +132,49 @@ Design a complete, step-by-step execution plan. Output ONLY the complete JSON, n
             logger.info(f"  Dependencies: {len(plan.dependencies)}")
             logger.info(f"  Estimated LOC: {plan.estimated_lines_of_code}")
             
+            # Log detailed plan structure
+            logger.debug("="*60)
+            logger.debug(f"EXECUTION PLAN DETAILS: {plan.plan_name}")
+            logger.debug("="*60)
+            logger.debug(f"Description: {plan.description}")
+            logger.debug(f"Estimated Lines: {plan.estimated_lines_of_code}")
+            logger.debug(f"")
+            
+            # Log each step with details
+            logger.debug(f"STEPS ({len(plan.steps)}):")
+            for i, step in enumerate(plan.steps, 1):
+                logger.debug(f"  Step {step.step_number}: {step.name}")
+                logger.debug(f"    Action: {step.action}")
+                logger.debug(f"    Description: {step.description}")
+                if step.inputs:
+                    logger.debug(f"    Inputs: {', '.join(step.inputs)}")
+                if step.outputs:
+                    logger.debug(f"    Outputs: {', '.join(step.outputs)}")
+                logger.debug("")
+            
+            # Log dependencies (external packages/libraries)
+            if plan.dependencies:
+                logger.debug(f"EXTERNAL DEPENDENCIES ({len(plan.dependencies)}):")
+                for dep in plan.dependencies:
+                    logger.debug(f"  • {dep}")
+                logger.debug("")
+            
+            # Log web server config if present
+            if plan.web_server_config:
+                logger.debug(f"WEB SERVER CONFIG:")
+                for key, value in plan.web_server_config.items():
+                    logger.debug(f"  {key}: {value}")
+                logger.debug("")
+            
+            # Log simulation config if present
+            if plan.simulation_config:
+                logger.debug(f"SIMULATION CONFIG:")
+                for key, value in plan.simulation_config.items():
+                    logger.debug(f"  {key}: {value}")
+                logger.debug("")
+            
+            logger.debug("="*60)
+            
             return plan
             
         except (ValueError, Exception) as e:

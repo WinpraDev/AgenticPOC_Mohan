@@ -106,6 +106,47 @@ Extract all task requirements and output JSON."""
         logger.info(f"  Simulations: {analysis.requires_simulation}")
         logger.info(f"  Complexity: {analysis.complexity}")
         
+        # Log detailed task analysis
+        logger.debug("="*60)
+        logger.debug("TASK ANALYSIS DETAILS")
+        logger.debug("="*60)
+        logger.debug(f"Task Type: {analysis.task_type}")
+        logger.debug(f"Complexity: {analysis.complexity}")
+        logger.debug(f"Estimated Execution Time: {analysis.estimated_execution_time}")
+        logger.debug(f"")
+        logger.debug(f"Primary Goal:")
+        logger.debug(f"  {analysis.primary_goal}")
+        logger.debug(f"")
+        
+        if analysis.data_sources:
+            logger.debug(f"Data Sources ({len(analysis.data_sources)}):")
+            for source in analysis.data_sources:
+                logger.debug(f"  • {source}")
+            logger.debug(f"")
+        
+        if analysis.required_inputs:
+            logger.debug(f"Required Inputs ({len(analysis.required_inputs)}):")
+            for inp in analysis.required_inputs:
+                name = inp.get('name', 'unknown')
+                inp_type = inp.get('type', 'unknown')
+                logger.debug(f"  • {name} ({inp_type})")
+            logger.debug(f"")
+        
+        if analysis.expected_outputs:
+            logger.debug(f"Expected Outputs ({len(analysis.expected_outputs)}):")
+            for out in analysis.expected_outputs:
+                name = out.get('name', 'unknown')
+                out_type = out.get('type', 'unknown')
+                logger.debug(f"  • {name} ({out_type})")
+            logger.debug(f"")
+        
+        logger.debug(f"Features:")
+        logger.debug(f"  Web Interface: {analysis.requires_web_interface}")
+        logger.debug(f"  Simulations: {analysis.requires_simulation}")
+        logger.debug(f"")
+        
+        logger.debug("="*60)
+        
         return analysis
         
     except Exception as e:

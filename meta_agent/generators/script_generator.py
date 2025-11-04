@@ -109,6 +109,63 @@ def generate_script(
             logger.info(f"  Lines of code: {metadata['lines_of_code']}")
             logger.info(f"  Dependencies: {len(requirements.split())}")
             
+            # Log detailed script generation info
+            logger.debug("="*60)
+            logger.debug("SCRIPT GENERATION DETAILS")
+            logger.debug("="*60)
+            logger.debug(f"Plan: {execution_plan.plan_name}")
+            logger.debug(f"Task Type: {task_analysis.task_type}")
+            logger.debug(f"Lines of Code: {metadata['lines_of_code']}")
+            logger.debug(f"")
+            
+            # Analyze generated code
+            import_count = len([line for line in script_code.split('\n') if line.strip().startswith(('import ', 'from '))])
+            class_count = len([line for line in script_code.split('\n') if line.strip().startswith('class ')])
+            function_count = len([line for line in script_code.split('\n') if line.strip().startswith('def ')])
+            
+            logger.debug(f"Code Structure:")
+            logger.debug(f"  Imports: {import_count}")
+            logger.debug(f"  Classes: {class_count}")
+            logger.debug(f"  Functions: {function_count}")
+            logger.debug(f"")
+            
+            # Check for specific patterns
+            has_database = "psycopg2" in script_code or "DATABASE_URL" in script_code
+            has_flask = "from flask import" in script_code or "import flask" in script_code
+            has_logging = "logger" in script_code or "logging" in script_code
+            
+            logger.debug(f"Features:")
+            logger.debug(f"  Database Access: {has_database}")
+            logger.debug(f"  Web Interface: {has_flask}")
+            logger.debug(f"  Logging: {has_logging}")
+            logger.debug(f"")
+            
+            # Log requirements
+            req_list = [r.strip() for r in requirements.split('\n') if r.strip() and not r.strip().startswith('#')]
+            logger.debug(f"Dependencies ({len(req_list)}):")
+            for req in req_list:
+                logger.debug(f"  • {req}")
+            logger.debug(f"")
+            
+            # Log environment variables
+            env_vars = [line.split('=')[0] for line in env_example.split('\n') if '=' in line and not line.startswith('#')]
+            if env_vars:
+                logger.debug(f"Environment Variables ({len(env_vars)}):")
+                for var in env_vars:
+                    logger.debug(f"  • {var}")
+                logger.debug(f"")
+            
+            # Log database schema usage if available
+            if database_schema:
+                logger.debug(f"Database Schema Provided:")
+                logger.debug(f"  Tables: {len(database_schema.tables)}")
+                logger.debug(f"  Relationships: {len(database_schema.relationships)}")
+                table_names = [t.name for t in database_schema.tables]
+                logger.debug(f"  Available: {', '.join(table_names)}")
+                logger.debug(f"")
+            
+            logger.debug("="*60)
+            
             return {
                 "script": script_code,
                 "requirements": requirements,

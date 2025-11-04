@@ -23,11 +23,24 @@ from meta_agent.executors.container_executor import execute_script_in_container
 
 # Configure logger for clean, developer-friendly output with timestamps
 logger.remove()
+
+# Terminal: Clean INFO logs for user
 logger.add(
     sys.stdout,
     format="<dim>{time:HH:mm:ss}</dim> | <level>{message}</level>",
     level="INFO",
     colorize=True
+)
+
+# File: Detailed DEBUG logs for development/troubleshooting
+Path("logs").mkdir(exist_ok=True)  # Ensure logs directory exists
+logger.add(
+    "logs/meta_agent_{time:YYYY-MM-DD_HH-mm-ss}.log",
+    format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - {message}",
+    level="DEBUG",
+    rotation="50 MB",
+    retention="14 days",
+    enqueue=True  # Thread-safe
 )
 
 
@@ -123,8 +136,8 @@ def main():
     
     # User request - TEST 5: Property Aggregation
     user_request = """
-Calculate the debt service coverage ratio (DSCR) for all properties in my portfolio.
-Show me the property name, NOI, annual debt service, and DSCR for each property.
+Give me a portfolio summary with average NOI, total debt service across all properties, 
+and calculate what percentage of properties have DSCR above 1.25.
 """
     
     logger.info("📝 Request:")
