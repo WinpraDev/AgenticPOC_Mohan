@@ -112,6 +112,11 @@ bash setup_env.sh
 
 # Edit .env file with your configuration
 nano .env
+
+# Setup database (optional, for database-related tasks)
+cd database
+bash init_database.sh
+cd ..
 ```
 
 ### Configuration
@@ -354,6 +359,15 @@ AgenticPOC_Meta/
 │       ├── llm_client.py          # LLM communication
 │       ├── database_inspector.py  # Schema discovery
 │       └── archive_manager.py     # Cleanup utilities
+│
+├── database/                       # PostgreSQL database setup
+│   ├── schema/                    # Database schema definition
+│   │   └── 01_create_tables.sql  # Tables, views, functions
+│   ├── data/                      # Sample data
+│   │   └── 02_sample_data.sql    # 10 properties with financial metrics
+│   ├── docker-compose.yml         # PostgreSQL container
+│   ├── init_database.sh           # One-command database setup
+│   └── README.md                  # Database documentation
 │
 ├── generated_scripts/              # Generated script outputs (gitignored)
 │   └── script_YYYYMMDD_HHMMSS/

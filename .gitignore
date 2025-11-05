@@ -12,15 +12,21 @@ ENV/
 # Environment
 .env
 .env.local
+database/.env
 
 # Logs
 logs/
 *.log
 
+archive_agent_factory_20251030/
+
 # Legacy folders (not used by Meta-Agent)
 results/
 generated_agents/
 agent_specs/
+
+# Generated scripts (Meta-Agent output)
+generated_scripts/
 
 
 # IDE
@@ -44,5 +50,5 @@ build/
 dist/
 *.egg-info/
 
-archive_agent_factory_20251030/
+
 
